@@ -1,0 +1,292 @@
+/* Global Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f9;
+    color: #05308de3;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #005f73;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.navbar .nav-link {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-right: 20px;
+    transition: color 0.3s ease;
+}
+
+.navbar .nav-link:hover {
+    color: #94d2bd;
+    text-decoration: underline;
+}
+
+.navbar-brand img {
+    height: 40px;
+}
+
+/* Hero Section */
+.hero-section {
+    height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    text-align: center;
+    color: white;
+    padding: 20px;
+    animation: fadeIn 2s ease-in-out;
+}
+.carousel-item img {
+    height: 250px; /* Ajuste la hauteur ici, par exemple 50% de la hauteur de l'écran */
+    object-fit: cover; /* Garde une bonne proportion pour éviter les déformations */
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.hero-section h1 {
+    font-size: 4rem;
+    font-weight: bold;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+    z-index: 2;
+    margin-bottom: 20px;
+    font-family: 'Merriweather', serif;
+    animation: slideDown 1.5s ease-in-out;
+}
+
+.hero-section p {
+    font-size: 1.8rem;
+    font-weight: 400;
+    z-index: 2;
+    max-width: 800px;
+    margin: auto;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+/* Section : À propos */
+.about-section {
+    background-color: #ffffff; /* Couleur claire pour contraster */
+    padding: 40px 20px; /* Espacement pour aérer */
+    text-align: center;
+    border-bottom: 5px solid #005f73; /* Ligne de séparation élégante */
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+    animation: fadeIn 1s ease-in-out; /* Animation d’apparition */
+}
+
+.about-section h2 {
+    font-size: 2.5rem;
+    color: #072c0a;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.about-section p {
+    font-size: 1.2rem;
+    line-height: 1.8; /* Espacement entre les lignes pour plus de confort */
+    color: #0f0f0f;
+    max-width: 900px; /* Limite la largeur pour une meilleure lecture */
+    margin: auto;
+}
+
+/* Transition élégante entre sections */
+.section-divider {
+    height: 6px;
+    background: linear-gradient(to right, #317512, #22a311);
+    margin: 20px 0;
+    border-radius: 3px;
+    width: 60%; /* Largeur ajustée */
+    margin: auto;
+}
+
+/* Animation pour les titres */
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.about-section h2 .about-section p {
+    animation: slideIn 0.8s ease;
+}
+/* Animal Cards */
+.card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    background: white;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.card img {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    object-fit: cover;
+    height: 290px;
+    transition: transform 0.3s ease;
+}
+
+.card img:hover {
+    transform: scale(1.05);
+}
+
+.card-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #020202;
+    text-align: center;
+}
+
+.card-text {
+    color: #000000;
+    line-height: 1.5;
+}
+
+/* Buttons */
+.btn-custom {
+    padding: 12px 30px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: #005f73;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    text-transform: uppercase;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+.btn-custom:hover {
+    background-color: #79d654;
+    transform: scale(1.2);
+}
+.btn-custom.active {
+    background-color: #79d654;
+    color: #fff;
+    font-weight: bold;
+    border: 2px solid #fff;
+}
+
+/* Footer */
+footer {
+    background-color: #005f73;
+    color: white;
+    text-align: center;
+    padding: 20px 10px;
+    font-size: 1rem;
+}
+
+footer a {
+    color: #94d2bd;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-section {
+        height: 70vh;
+        text-align: center;
+    }
+
+    .hero-section h1 {
+        font-size: 3rem;
+    }
+
+    .hero-section p {
+        font-size: 1.2rem;
+    }
+
+    .card img {
+        height: 200px;
+    }
+
+    .btn-custom {
+        font-size: 0.9rem;
+        padding: 10px 20px;
+    }
+    
+}
+
+@media (max-width: 480px) {
+    h2 {
+        font-size: 2rem;
+    }
+
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero-section p {
+        font-size: 1rem;
+    }
+}
+.maps-section {
+    margin-top: 20px;
+    padding: 10px 0;
+    background-color: #f4f4f9;
+}
+
+.maps-section iframe {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}

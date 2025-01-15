@@ -1,0 +1,88 @@
+
+/* Navigation Bar */
+.navbar {
+    background-color: #1e5631;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+  
+.navbar-brand img {
+    height: 60px;
+}
+  
+.navbar-nav .nav-link {
+    font-size: 1rem;
+    color: #fff;
+    margin: 0 10px;
+    transition: color 0.3s;
+}
+  
+.navbar-nav .nav-link:hover {
+    color: #a8d5ba;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: url('/images/foret3.png') no-repeat center center fixed, #4CAF50;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.connexion-page {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: rgba(0, 0, 0, 0.5); /* Couche sombre */
+    overflow: hidden;
+}
+
+.connexion-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    animation: slide-in 1.5s ease-out;
+    z-index: 2;
+}
+
+/* Animation de carte */
+@keyframes slide-in {
+    from {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.btn-animate {
+    background: linear-gradient(to right, #4CAF50, #2E7D32);
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-animate:hover {
+    transform: translateY(-3px);
+}
+
+/* Champs valides/invalides */
+.form-control:valid {
+    border-color: #4CAF50;
+}
+
+.form-control:invalid {
+    border-color: red;
+}

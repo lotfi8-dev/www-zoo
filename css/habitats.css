@@ -1,0 +1,252 @@
+/* Styles de base */
+body {
+    padding-top: 56px;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to bottom, #f4f4f9, #e6e6e6); /* Ajout d'un dégradé subtil */
+    color: #383636;
+    animation: fadeIn 1s ease-in; /* Effet d'apparition */
+}
+
+
+.hero-section {
+    height: 235px;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(/images/animaux.png) no-repeat center center / cover;
+    display: flex
+    min-height: 300px; /* Assure une hauteur minimale */
+    overflow: hidden; /* Empêche le débordement */ 
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 1.5s ease-in-out;
+    min-height: 300px; /* Assure une hauteur minimale */
+    overflow: hidden; /* Empêche le débordement */  
+}
+.text-white {
+    --bs-text-opacity: 1;
+    color: rgba(var(--bs-white-rgb), var(--bs-text-opacity)) !important;
+}
+.text-center {
+    text-align: center !important;
+}
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+
+/* Navigation Bar */
+.navbar {
+    background-color: #1e5631;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+  
+.navbar-brand img {
+    height: 60px;
+}
+  
+.navbar-nav .nav-link {
+    font-size: 1rem;
+    color: #fff;
+    margin: 0 10px;
+    transition: color 0.3s;
+}
+  
+.navbar-nav .nav-link:hover {
+    color: #a8d5ba;
+}
+  
+.btn-outline-light {
+    border-color: #a8d5ba;
+    color: #a8d5ba;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-outline-light:hover{
+    background-color: #a8d5ba;
+    color: #1e5631;
+}
+
+.animals-zones h2 {
+    color: #021d10de;
+    margin-bottom: 20px;
+    font-size: 3rem; /* Taille augmentée */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+}
+
+.animals-zones p.lead {
+    margin-bottom: 40px;
+    color: #555;
+    font-size: 1.8rem; /* Taille légèrement augmentée */
+    line-height: 1.8; /* Meilleur espacement */
+}
+#animalList li {
+    font-size: 1.1rem; /* Augmente légèrement la taille de la police */
+    line-height: 1.6; /* Ajoute un peu d'espace entre les lignes pour plus de lisibilité */
+}
+
+
+/* Grille des cartes */
+.custom-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 colonnes */
+    gap: 30px; /* Espacement entre les cartes */
+    justify-content: center; /* Centre la grille */
+    padding: 20px; /* Ajout d'espacement interne */
+}
+
+/* Style des cartes */
+.card {
+    background-color: #fff;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s ease;
+    overflow: hidden;
+    max-width: 500px; /* Largeur maximale */
+    position: relative;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    background-color: #f9f9f9; /* Couleur légèrement différente au survol */
+}
+
+/* Animation pour les images */
+.card-img-top {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    transition: transform 0.3s ease-in-out;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.1); /* Zoom subtil au survol */
+}
+
+.card-body {
+    padding: 20px;
+    text-align: center;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    color: #000000;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.card-text {
+    color: #181a17f6;
+    margin-bottom: 15px;
+    font-style: italic; /* Texte plus élégant */
+}
+
+/* Boutons */
+.btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    transition: transform 0.3s, background-color 0.3s;
+    background: linear-gradient(to right, #28a745, #218838); /* Dégradé sur les boutons */
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Ombre légère */
+}
+
+.btn:hover {
+    transform: scale(1.1);
+    background: linear-gradient(to right, #218838, #28a745); /* Inversion du dégradé */
+}
+
+/* Badge des cartes */
+.card:hover::after {
+    content: "Explorez";
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(70, 92, 81, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    animation: fadeInBadge 0.3s ease-in;
+}
+
+/* Animation pour le badge */
+@keyframes fadeInBadge {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsivité */
+@media (max-width: 768px) {
+    .custom-grid {
+        grid-template-columns: 1fr; /* Une colonne pour les petits écrans */
+    }
+
+    .animals-zones h2 {
+        font-size: 2rem; /* Taille ajustée */
+    }
+
+    .btn {
+        padding: 8px 15px; /* Boutons plus petits */
+    }
+}
+
+/* Section Stats */
+.stats {
+    background: linear-gradient(to right, #e6f2f5, #f4f9fb);
+    padding: 40px 20px;
+}
+
+.stats h3 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #29b373;
+    margin-bottom: 10px;
+}
+
+.stats p {
+    font-size: 1.2rem;
+    color: #555;
+}
+
+/* Quiz */
+.quiz {
+    background: #29b373;
+    color: #fff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1.5s ease-in;
+}
+
+.quiz h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.quiz button {
+    background-color: #fff;
+    color: #29b373;
+    border: 2px solid #fff;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    transition: transform 0.3s, color 0.3s, background-color 0.3s;
+}
+
+.quiz button:hover {
+    transform: scale(1.1);
+    background-color: #29b373;
+    color: #fff;
+}

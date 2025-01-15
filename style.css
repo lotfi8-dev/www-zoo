@@ -1,0 +1,260 @@
+/* General Styles */
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Navigation Bar */
+.navbar {
+  background-color: #1e5631;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand img {
+  height: 60px;
+}
+
+.navbar-nav .nav-link {
+  font-size: 1rem;
+  color: #fff;
+  margin: 0 10px;
+  transition: color 0.3s;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #a8d5ba;
+}
+
+.btn-outline-light {
+  border-color: #a8d5ba;
+  color: #a8d5ba;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-outline-light:hover {
+  background-color: #a8d5ba;
+  color: #1e5631;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/hero-bg.jpg') no-repeat center center / cover;
+  color: #fff;
+  text-align: center;
+  padding: 120px 20px;
+}
+
+.hero-section h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.hero-section p {
+  font-size: 1.5rem;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.hero-section .btn {
+  background-color: #a8d5ba;
+  color: #1e5631;
+  padding: 10px 30px;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  box-shadow: 0 5px 15px rgba(168, 213, 186, 0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.hero-section .btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 10px 20px rgba(168, 213, 186, 0.5);
+}
+
+/* Section Highlights */
+.section-title {
+  font-size: 2.5rem;
+  color: #1e5631;
+  text-align: center;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 4px;
+  background-color: #59ec94;
+  margin: 10px auto 0;
+}
+
+.card {
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+  height: 220px;
+  object-fit: cover;
+  border-bottom: 5px solid #1e5631;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1e5631;
+}
+
+.card-text {
+  color: #555;
+  margin-top: 10px;
+}
+
+.btn-success {
+  background-color: #a8d5ba;
+  border: none;
+  border-radius: 25px;
+  color: #1e5631;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn-success:hover {
+  background-color: #94c99c;
+  transform: scale(1.1);
+}
+
+/* Section Animaux */
+.animaux-section {
+  background-color: #bef39f; /* Couleur claire harmonieuse pour le zoo */
+  padding: 60px 20px;
+}
+
+.animaux-section .card {
+  background-color: #f9f9f9;
+  border-left: 5px solid #1e5631;
+  transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.animaux-section .card:hover {
+  background-color: #d7ffd3;
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.animaux-section .card-title {
+  color: #1e5631;
+}
+
+.animaux-section .btn {
+  background-color: #1e5631;
+  color: #fff;
+  border-radius: 25px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.animaux-section .btn:hover {
+  background-color: #a8d5ba;
+  transform: scale(1.05);
+}
+
+/* Section Activities */
+.activities-section {
+  background-color: #bef39f;
+  padding: 60px 20px;
+}
+
+.activities-section .card {
+  background-color: #f9f9f9;
+  border-left: 5px solid #1e5631;
+  transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.activities-section .card:hover {
+  background-color: #d7ffd3;
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.activities-section .card-title {
+  color: #1e5631;
+}
+
+.activities-section .btn {
+  background-color: #1e5631;
+  color: #fff;
+  border-radius: 25px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.activities-section .btn:hover {
+  background-color: #a8d5ba;
+  transform: scale(1.05);
+}
+
+/* Section Avis */
+.avis-section {
+  background-color: #bef39f; /* Harmonisation avec les autres sections */
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.avis-section blockquote {
+  background-color: #f9f9f9;
+  border-left: 5px solid #1e5631;
+  padding: 20px;
+  margin: 20px auto;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.avis-section blockquote:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.avis-section img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.avis-section p {
+  font-style: italic;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.avis-section footer {
+  color: #1e5631;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+/* Section Carte */
+.embed-responsive {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding-top: 5px;
+  overflow: hidden;
+}
