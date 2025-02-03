@@ -35,17 +35,18 @@ CREATE TABLE users (
     role ENUM('admin', 'employee', 'vet') NOT NULL -- Rôle de l'utilisateur (administrateur, employé, vétérinaire)
 );
 
-////////////// insertion admin vet emp 
-
--- Table avis -- Contient les avis laissés par les visiteurs
+-- Table avis visiteurs
+-- Contient les avis laissés par les visiteurs
 CREATE TABLE review (
     id INT AUTO_INCREMENT PRIMARY KEY, -- Identifiant unique pour chaque avis
     pseudo VARCHAR(255) NOT NULL, -- Pseudo du visiteur qui laisse l'avis
     avis TEXT NOT NULL, -- Contenu de l'avis
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Date de création de l'avis
     is_approved BOOLEAN DEFAULT FALSE -- Indique si l'avis est validé par un employé
 );
 
--- Table messages de contact -- Stocke les messages envoyés via le formulaire de contact
+-- Table messages de contact
+-- Stocke les messages envoyés via le formulaire de contact
 CREATE TABLE contact_message (
     id INT AUTO_INCREMENT PRIMARY KEY, -- Identifiant unique pour chaque message
     title VARCHAR(255) NOT NULL, -- Titre du message
@@ -54,7 +55,41 @@ CREATE TABLE contact_message (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Date et heure de création du message
 );
 
--- Insérer les habitats---
+-- Table comptes rendus vétérinaires
+-- Stocke les rapports de santé des animaux
+CREATE TABLE comptes_rendus (
+    id INT AUTO_INCREMENT PRIMARY KEY, -- Identifiant unique pour chaque rapport
+    id_animal INT NOT NULL, -- Identifiant de l'animal concerné
+    etat_sante TEXT NOT NULL, -- Rapport sur l'état de santé
+    date DATE NOT NULL, -- Date du rapport
+    commentaire TEXT, -- Commentaire additionnel
+    created_by INT NOT NULL, -- Identifiant du vétérinaire ayant fait le rapport
+    FOREIGN KEY (id_animal) REFERENCES animal(id) ON DELETE CASCADE, -- Supprime les rapports si l'animal est supprimé
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE -- Supprime les rapports si le vétérinaire est supprimé
+);
+
+-- Table nourriture
+-- Suivi des repas donnés aux animaux
+CREATE TABLE nourriture (
+    id INT AUTO_INCREMENT PRIMARY KEY, -- Identifiant unique pour chaque repas
+    id_animal INT NOT NULL, -- Identifiant de l'animal concerné
+    type_nourriture VARCHAR(100) NOT NULL, -- Type de nourriture donnée
+    quantite FLOAT NOT NULL, -- Quantité en kg
+    date_repas DATETIME NOT NULL, -- Date et heure du repas
+    FOREIGN KEY (id_animal) REFERENCES animal(id) ON DELETE CASCADE -- Supprime les repas si l'animal est supprimé
+);
+
+-- Table consultations
+-- Suivi des consultations d'animaux (statistiques)
+CREATE TABLE consultations (
+    id INT AUTO_INCREMENT PRIMARY KEY, -- Identifiant unique pour chaque consultation
+    id_animal INT NOT NULL, -- Identifiant de l'animal concerné
+    nombre_vues INT DEFAULT 0, -- Nombre de consultations
+    last_viewed TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Date de dernière consultation
+    FOREIGN KEY (id_animal) REFERENCES animal(id) ON DELETE CASCADE -- Supprime les consultations si l'animal est supprimé
+);
+
+-- Insérer les habitats
 INSERT INTO habitat (nom, description, image) VALUES
 ('Savane', 'Vaste plaine herbeuse avec des animaux emblématiques.', '/images/savane.png'),
 ('Jungle', 'Forêt tropicale dense regorgeant de vie.', '/images/jungle.png'),
@@ -73,7 +108,7 @@ INSERT INTO animal (nom, description, image, alimentation, derniere_visite, habi
 -- Jungle
 ('Tigre', 'Prédateur puissant.', '/images/tigre.png', 'Viande (6 kg)', '2024-01-01', 2),
 ('Singe', 'Animal agile et intelligent.', '/images/singe.png', 'Fruits et insectes (4 kg)', '2024-01-02', 2),
-('Perroquet', 'Oiseau coloré.', '/images/perrroquet.png', 'Fruits et noix (2 kg)', '2024-01-03', 2),
+('Perroquet', 'Oiseau coloré.', '/images/perroquet.png', 'Fruits et noix (2 kg)', '2024-01-03', 2),
 ('Serpent', 'Reptile mystérieux.', '/images/serpent.png', 'Petits mammifères (2 kg)', '2024-01-04', 2),
 ('Léopard', 'Prédateur agile.', '/images/leopard.png', 'Viande (5 kg)', '2024-01-05', 2),
 ('Grenouille tropicale', 'Amphibien coloré.', '/images/grenouille.png', 'Insectes (1 kg)', '2024-01-06', 2),
@@ -89,5 +124,5 @@ INSERT INTO animal (nom, description, image, alimentation, derniere_visite, habi
 ('Loup', 'Prédateur social.', '/images/loup.png', 'Viande (6 kg)', '2024-01-02', 4),
 ('Renard', 'Animal rusé.', '/images/renard.png', 'Petits mammifères et fruits (4 kg)', '2024-01-03', 4),
 ('Hibou', 'Oiseau nocturne.', '/images/hibou.png', 'Rongeurs et insectes (2 kg)', '2024-01-04', 4),
-('Sanglier', 'Animal robuste.', '/images/sanglier1.png', 'Racines et fruits (5 kg)', '2024-01-05', 4),
+('Sanglier', 'Animal robuste.', '/images/sanglier.png', 'Racines et fruits (5 kg)', '2024-01-05', 4),
 ('Écureuil', 'Animal agile.', '/images/ecureuil.png', 'Noix et graines (1 kg)', '2024-01-06', 4);

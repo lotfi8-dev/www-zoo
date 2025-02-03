@@ -1,71 +1,91 @@
+<?php
+session_start();
+include '../includes/db_connect.php';
+
+// Vérifier si l'utilisateur est bien vétérinaire
+if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'veterinaire') {
+    header("Location: ../connexion.php");
+    exit();
+}
+
+// Récupération des animaux
+$stmt = $pdo->query("SELECT id, nom, etat, derniere_visite FROM animaux");
+$animaux = $stmt->fetchAll();
+
+// Traitement du formulaire
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $animal_id = $_POST['animal_id'];
+    $etat = $_POST['etat'];
+    $nourriture = $_POST['nourriture'];
+    $grammage = $_POST['grammage'];
+    $date = date('Y-m-d');
+    
+    $stmt = $pdo->prepare("INSERT INTO suivi_veterinaire (animal_id, etat, nourriture, grammage, date) VALUES (?, ?, ?, ?, ?)");
+    $stmt->execute([$animal_id, $etat, $nourriture, $grammage, $date]);
+    header("Location: espace-veterinaire.php");
+    exit();
+}
+
+?>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Espace Vétérinaire - Zoo Arcadia</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/espace-employe.css">
+    <link rel="stylesheet" href="/css/veterinaire.css">
 </head>
 <body>
-    <!-- Barre de navigation -->
-    <?php include '../include/navbar.php'; ?>
-
-    <!-- Header -->
-    <header class="bg-success text-white text-center py-3">
-        <h1>Espace Vétérinaire</h1>
-        <p>Gérez les comptes rendus de santé et les avis sur les habitats</p>
-    </header>
-
-    <!-- Section Comptes Rendus de Santé -->
-    <main class="container py-5">
-        <section class="mb-5">
-            <h2 class="text-secondary">Comptes Rendus de Santé</h2>
-            <p>Ajoutez ou mettez à jour les informations sur la santé des animaux.</p>
-            <form class="mb-3">
-                <div class="mb-3">
-                    <label for="animal" class="form-label">Animal</label>
-                    <select id="animal" class="form-select">
-                        <option value="lion">Lion</option>
-                        <option value="girafe">Girafe</option>
-                        <option value="elephant">Éléphant</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="etat" class="form-label">État de Santé</label>
-                    <input type="text" id="etat" class="form-control" placeholder="Exemple : Bonne santé, Blessure légère">
-                </div>
-                <div class="mb-3">
-                    <label for="observations" class="form-label">Observations</label>
-                    <textarea id="observations" class="form-control" rows="4" placeholder="Ajoutez des détails..."></textarea>
-                </div>
-                <button type="submit" class="btn btn-success">Ajouter</button>
-            </form>
-        </section>
-
-        <!-- Section Avis sur les Habitats -->
-        <section>
-            <h2 class="text-secondary">Avis sur les Habitats</h2>
-            <p>Donnez votre avis sur l'état des habitats pour améliorer les conditions des animaux.</p>
-            <form class="mb-3">
-                <div class="mb-3">
-                    <label for="habitat" class="form-label">Habitat</label>
-                    <select id="habitat" class="form-select">
-                        <option value="savane">Savane</option>
-                        <option value="jungle">Jungle</option>
-                        <option value="marais">Marais</option>
-                        <option value="foret">Forêt</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="commentaire" class="form-label">Commentaire</label>
-                    <textarea id="commentaire" class="form-control" rows="4" placeholder="Ajoutez des suggestions ou observations..."></textarea>
-                </div>
-                <button type="submit" class="btn btn-success">Envoyer</button>
-            </form>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <?php include '../include/footer.php'; ?>
+    <?php include '../includes/navbar.php'; ?>
+    <div class="container">
+        <h2 class="text-center">Espace Vétérinaire</h2>
+        <h3>Suivi des animaux</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>État</th>
+                    <th>Dernière visite</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($animaux as $animal): ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($animal['id']); ?></td>
+                    <td><?php echo htmlspecialchars($animal['nom']); ?></td>
+                    <td><?php echo htmlspecialchars($animal['etat']); ?></td>
+                    <td><?php echo htmlspecialchars($animal['derniere_visite']); ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        
+        <h3>Ajouter un suivi vétérinaire</h3>
+        <form method="post">
+            <div class="mb-3">
+                <label>Animal</label>
+                <select name="animal_id" class="form-control" required>
+                    <?php foreach ($animaux as $animal): ?>
+                        <option value="<?php echo $animal['id']; ?>"><?php echo htmlspecialchars($animal['nom']); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label>État</label>
+                <input type="text" name="etat" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label>Nourriture</label>
+                <input type="text" name="nourriture" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label>Grammage</label>
+                <input type="number" name="grammage" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </form>
+    </div>
+    <?php include '../includes/footer.php'; ?>
 </body>
 </html>
