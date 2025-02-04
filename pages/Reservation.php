@@ -7,7 +7,7 @@ header("X-Frame-Options: DENY");
 header("X-XSS-Protection: 1; mode=block");
 header("Content-Security-Policy: default-src 'self'; script-src 'self' https://kit.fontawesome.com;");
 
-require_once '../includes/db_connect.php';
+require_once '../include/db_connect.php';
 
 // Génération et vérification du token CSRF
 if (empty($_SESSION['csrf_token'])) {
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Zoo Arcadia - Réservation</title>
     <meta name="description" content="Réservez votre visite au Zoo Arcadia.">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/Reservation.css">
+    <link rel="stylesheet" href="/css/Activités.css">
 </head>
 <body>
     <?php include '../include/navbar.php'; ?>
