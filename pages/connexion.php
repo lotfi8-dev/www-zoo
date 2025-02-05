@@ -1,3 +1,56 @@
+<?php
+session_start();
+include '../include/db_connect.php';
+
+// Générer un token CSRF si inexistant
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// Connexion sécurisée avec gestion des rôles
+$error = ''; // Variable for error messages
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // CSRF token validation
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die("Erreur CSRF, veuillez réessayer.");
+    }
+
+    $email = trim($_POST['email']);
+    $password = trim($_POST['password']);
+
+    // Query the database for the user with the provided email
+    $stmt = $pdo->prepare("SELECT id, email, password, role FROM users WHERE email = ?");
+    $stmt->execute([$email]);
+    $user = $stmt->fetch();
+
+    // Check if user exists and if the password matches
+    if ($user && password_verify($password, $user['password'])) {
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_role'] = $user['role'];
+
+        // Redirect based on user role
+        switch ($user['role']) {
+            case 'admin':
+                header("Location: ../pages/admin-dashboard.php");
+                break;
+            case 'employe':
+                header("Location: ../pages/espace-employe.php");
+                break;
+            case 'veterinaire':
+                header("Location: ../pages/espace-veterinaire.php");
+                break;
+            default:
+                header("Location: ../pages/index.php"); // Default redirect
+                break;
+        }
+        exit();
+    } else {
+        $error = "Email ou mot de passe incorrect.";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -14,8 +67,17 @@
     <!-- Section Connexion -->
     <section class="py-5">
         <div class="container">
-            <h2 class="text-center text-primary mb-4"><br>Connectez-vous</h2>
-            <form action="#" method="POST" class="bg-light p-4 rounded shadow">
+            <br>
+            <h2 class="text-center text-primary mb-4">Connectez-vous</h2>
+            <!-- Display error message if login fails -->
+            <?php if ($error): ?>
+                <div class="alert alert-danger"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></div>
+            <?php endif; ?>
+
+            <form action="" method="POST" class="bg-light p-4 rounded shadow">
+                <!-- CSRF token hidden input field -->
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+
                 <div class="mb-3">
                     <label for="email" class="form-label">Adresse Email</label>
                     <input type="email" class="form-control" id="email" name="email" placeholder="Entrez votre email" required>
@@ -33,6 +95,7 @@
                 </div>
                 <button type="submit" class="btn btn-primary w-100 mt-3">Se connecter</button>
             </form>
+
             <p class="text-center mt-4">Pas encore inscrit ? <a href="#" class="text-primary">Créez un compte</a></p>
         </div>
     </section>
