@@ -1,13 +1,13 @@
 <?php
 session_start();
+include '../include/db_connect.php';
 session_regenerate_id(true);
 
-// Protection contre certaines attaques XSS et Clickjacking
+//Protection contre certaines attaques XSS et Clickjacking
 header("X-Frame-Options: DENY");
 header("X-XSS-Protection: 1; mode=block");
-header("Content-Security-Policy: default-src 'self'; script-src 'self' https://kit.fontawesome.com;");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' https://kit.fontawesome.com https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com;");
 
-require_once '../include/db_connect.php';
 
 // Génération et vérification du token CSRF
 if (empty($_SESSION['csrf_token'])) {
@@ -63,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <?php include '../include/navbar.php'; ?>
 
+    <!-- Hero Section -->
     <header class="hero-section text-white text-center">
         <div class="container d-flex flex-column justify-content-center align-items-center h-100">
             <h1 class="display-4">Réservez votre visite au Zoo Arcadia</h1>
@@ -70,42 +71,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </header>
 
-    <section class="reservation-section py-5">
+    <!-- Section Réservation -->
+    <section class="py-5">
         <div class="container">
-            <form action="" method="POST" class="reservation-form bg-light p-4 rounded shadow">
+            <h2 class="text-center text-primary mb-4"><br>Réservations</h2>
+            <form action="" method="POST" class="bg-light p-4 rounded shadow">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
-                <div class="row g-3">
-                    <div class="col-md-6">
+                    <div class="mb-3">
                         <label for="name" class="form-label">Nom complet</label>
                         <input type="text" class="form-control" id="name" name="name" required>
                     </div>
-                    <div class="col-md-6">
+                    <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
                         <input type="email" class="form-control" id="email" name="email" required>
                     </div>
-                </div>
-                <div class="row g-3 mt-3">
-                    <div class="col-md-6">
+                    <div class="mb-3">
                         <label for="date" class="form-label">Date de visite</label>
                         <input type="date" class="form-control" id="date" name="date" required>
                     </div>
-                    <div class="col-md-6">
+                    <div class="mb-3">
                         <label for="nb_personnes" class="form-label">Nombre de personnes</label>
                         <input type="number" class="form-control" id="nb_personnes" name="nb_personnes" min="1" max="20" required>
                     </div>
-                </div>
-                <div class="mt-3">
+                <div class="mb-3">
                     <label for="message" class="form-label">Message ou demandes particulières</label>
                     <textarea class="form-control" id="message" name="message" rows="4"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary w-100 mt-4">Envoyer ma réservation</button>
             </form>
             <?php if (!empty($message)) : ?>
-                <p class="alert alert-info mt-3"> <?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?> </p>
+                <p class="alert alert-info mb-3"> <?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?> </p>
             <?php endif; ?>
         </div>
     </section>
 
+    <!-- Informations utiles -->
     <section class="info-section py-5 bg-light">
         <div class="container">
             <h2 class="text-center text-primary mb-4">Informations Utiles</h2>
@@ -125,8 +125,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </section>
-
+    
+    <!-- Footer -->
     <?php include '../include/footer.php'; ?>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>
