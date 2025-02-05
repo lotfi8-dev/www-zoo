@@ -1,4 +1,19 @@
 <?php
+// secure cookies
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'domain' => 'localhost',  // Make sure to set this to your actual domain if needed
+    'secure' => false,  // Set this to false as you're not using HTTPS
+    'httponly' => true,  // Prevent JS access to cookies
+    'samesite' => 'Strict'  // Protect from cross-site request attacks
+]);
+
+// Protection against XSS and Clickjacking
+header("X-Frame-Options: DENY");
+header("X-XSS-Protection: 1; mode=block");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' https://kit.fontawesome.com https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com;");
+
 session_start();
 include '../include/db_connect.php';
 
@@ -8,45 +23,63 @@ if (empty($_SESSION['csrf_token'])) {
 }
 
 // Connexion sécurisée avec gestion des rôles
-$error = ''; // Variable for error messages
+$error = ''; //  error messages
+$logError = ''; // logging detailed errors
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // CSRF token validation
+    // CSRF token validation (important: check before handling user data)
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        die("Erreur CSRF, veuillez réessayer.");
-    }
-
-    $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
-
-    // Query the database for the user with the provided email
-    $stmt = $pdo->prepare("SELECT id, email, password, role FROM users WHERE email = ?");
-    $stmt->execute([$email]);
-    $user = $stmt->fetch();
-
-    // Check if user exists and if the password matches
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['user_role'] = $user['role'];
-
-        // Redirect based on user role
-        switch ($user['role']) {
-            case 'admin':
-                header("Location: ../pages/admin-dashboard.php");
-                break;
-            case 'employe':
-                header("Location: ../pages/espace-employe.php");
-                break;
-            case 'veterinaire':
-                header("Location: ../pages/espace-veterinaire.php");
-                break;
-            default:
-                header("Location: ../pages/index.php"); // Default redirect
-                break;
-        }
-        exit();
+        $error = "Une erreur est survenue. Veuillez réessayer.";
+        error_log("CSRF token mismatch for email: " . $_POST['email'], 3, "/chemin/a/modifier/plus/tard");
     } else {
-        $error = "Email ou mot de passe incorrect.";
+        // Sanitize user input
+        $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+        $password = trim($_POST['password']);
+
+        // Validate email format
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $error = "L'adresse email fournie est invalide.";
+        } else {
+            try {
+                // Query the database for the user with the provided email
+                $stmt = $pdo->prepare("SELECT id, email, password, role FROM users WHERE email = ?");
+                $stmt->execute([$email]);
+                $user = $stmt->fetch();
+
+                // Check if user exists and if the password matches
+                if ($user && password_verify($password, $user['password'])) {
+                    // Regenerate session ID for security after login
+                    session_regenerate_id(true);
+
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['user_role'] = $user['role'];
+
+                    // Redirect based on user role
+                    switch ($user['role']) {
+                        case 'admin':
+                            header("Location: ../pages/admin-dashboard.php");
+                            break;
+                        case 'employe':
+                            header("Location: ../pages/espace-employe.php");
+                            break;
+                        case 'veterinaire':
+                            header("Location: ../pages/espace-veterinaire.php");
+                            break;
+                        default:
+                            header("Location: ../pages/index.php"); // Default redirect
+                            break;
+                    }
+                    exit();
+                } else {
+                    $error = "Email ou mot de passe incorrect.";
+                    error_log("Login failed for email: $email", 3, "/var/log/myapp_errors.log");
+                }
+            } catch (Exception $e) {
+                $error = "Une erreur est survenue. Veuillez réessayer.";
+                // Log the detailed error for admins/developers
+                error_log("Database error: " . $e->getMessage(), 3, "/var/log/myapp_errors.log");
+            }
+        }
     }
 }
 ?>
@@ -67,9 +100,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- Section Connexion -->
     <section class="py-5">
         <div class="container">
-            <br>
             <h2 class="text-center text-primary mb-4">Connectez-vous</h2>
-            <!-- Display error message if login fails -->
+
+            <!-- Display generic error message if login fails -->
             <?php if ($error): ?>
                 <div class="alert alert-danger"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></div>
             <?php endif; ?>
