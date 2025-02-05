@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <header class="hero-section text-white text-center">
         <div class="container d-flex flex-column justify-content-center align-items-center h-100">
             <h1 class="display-4">Contactez le Zoo Arcadia</h1>
-            <p class="lead">Nous sommes là pour répondre à toutes vos questions et demandes.</p>
+            <p class="lead">Nous sommes là pour répondre à toutes vos questions et demandes</p>
         </div>
     </header>
 
@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
                 <div class="mb-3">
                     <label for="message" class="form-label">Votre message</label>
-                    <textarea class="form-control" id="message" name="message" rows="4" placeholder="Entrez votre message" required></textarea>
+                    <textarea class="form-control" id="message" name="message" rows="4" placeholder="Entrez votre message" style="resize: none;" required ></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Envoyer</button>
             </form>
