@@ -1,38 +1,32 @@
 <?php
-session_start();
-
 // secure cookies
 session_set_cookie_params([
     'lifetime' => 0,
     'path' => '/',
-    'domain' => 'yourdomain.com',
-    'secure' => true,  // Ensure cookies are only sent over HTTPS
+    'domain' => 'localhost',  // Make sure to set this to your actual domain if needed
+    'secure' => false,  // Set this to false as you're not using HTTPS
     'httponly' => true,  // Prevent JS access to cookies
     'samesite' => 'Strict'  // Protect from cross-site request attacks
 ]);
 
-// Regenerate session ID
+session_start();
+
+// Regen session
 session_regenerate_id(true);
 
-// XSS & clickjacking
+// Protection against XSS and Clickjacking
 header("X-Frame-Options: DENY");
 header("X-XSS-Protection: 1; mode=block");
 header("Content-Security-Policy: default-src 'self'; script-src 'self' https://kit.fontawesome.com https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com;");
 
-// Enforce HTTPS
-if ($_SERVER['HTTPS'] != 'on') {
-    header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-    exit;
-}
-
-// CSRF Token generation and verification
+// CSRF token generation & verification
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
 $message = "";
 
-// Rate limiting
+// Rate limiting - store the timestamp of the last form submission
 if (isset($_SESSION['last_submission_time'])) {
     $time_diff = time() - $_SESSION['last_submission_time'];
     if ($time_diff < 30) {  // Prevent multiple submissions within 30 seconds
@@ -40,7 +34,6 @@ if (isset($_SESSION['last_submission_time'])) {
     }
 }
 
-// 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         die("Erreur CSRF détectée !");
@@ -68,20 +61,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($nom && $email && $date && $nb_personnes > 0 && $nb_personnes <= 20) {
         try {
-            // check available
             $stmt = $pdo->prepare("SELECT COUNT(*) FROM reservations WHERE date_reservation = ?");
             $stmt->execute([$date]);
             $disponibilite = (int) $stmt->fetchColumn();
 
-            if ($disponibilite < 50) {  // Limit to 50 people per day
+            if ($disponibilite < 50) {  // Limit = 50 
                 $stmt = $pdo->prepare("INSERT INTO reservations (nom, email, date_reservation, nb_personnes, message) VALUES (?, ?, ?, ?, ?)");
                 $stmt->execute([$nom, $email, $date, $nb_personnes, $message_user]);
 
-                // Store the timestamp of this form submission
+                // timestamp
                 $_SESSION['last_submission_time'] = time();
 
                 $message = "Votre réservation a bien été enregistrée.";
-                // regen CSRF token
+                // regen CSRF token 
                 $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             } else {
                 $message = "Désolé, cette date est complète.";
