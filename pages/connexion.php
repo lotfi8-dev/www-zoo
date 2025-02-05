@@ -17,7 +17,7 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' https://k
 session_start();
 include '../include/db_connect.php';
 
-// Générer un token CSRF si inexistant
+// Générer un token CSRF
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 // check user & password
                 if ($user && password_verify($password, $user['password'])) {
-                    // Regenerate session ID for security after login
+                    // Regenerate session ID
                     session_regenerate_id(true);
 
                     $_SESSION['user_id'] = $user['id'];
@@ -72,12 +72,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     exit();
                 } else {
                     $error = "Email ou mot de passe incorrect.";
-                    error_log("Login failed for email: $email", 3, "/var/log/test.log");
+                    // error_log("Login failed for email: $email", 3, "/var/log/test.log");
                 }
             } catch (Exception $e) {
                 $error = "Une erreur est survenue. Veuillez réessayer.";
                 // Log detailed error
-                error_log("Database error: " . $e->getMessage(), 3, "/var/log/test.log");
+                // error_log("Database error: " . $e->getMessage(), 3, "/var/log/test.log");
             }
         }
     }
@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- Section Connexion -->
     <section class="py-5">
         <div class="container">
-            <br>
+            
             <h2 class="text-center text-primary mb-4">Connectez-vous</h2>
             <!-- Display generic error message if login fails -->
             <?php if ($error): ?>
