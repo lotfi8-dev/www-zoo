@@ -1,5 +1,47 @@
 <?php
+// Backend logic for processing the form
+// secure cookies
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'domain' => 'localhost',
+    'secure' => false,  // NO https for now
+    'httponly' => true,  // Prevent JS access to cookies
+    'samesite' => 'Strict'  // Protect from cross-site request attacks
+]);
+
+// Protection against XSS and Clickjacking
+header("X-Frame-Options: DENY");
+header("X-XSS-Protection: 1; mode=block");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' https://kit.fontawesome.com https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com;");
+
+session_start();
+
+$confirmation = '';
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $nom = trim($_POST['name']);
+    $email = trim($_POST['email']);
+    $message = trim($_POST['message']);
+
+    if (!empty($nom) && !empty($email) && !empty($message)) {
+        $to = "contact@zooarcadia.com";
+        $subject = "Message de $nom via le formulaire de contact";
+        $headers = "From: $email\r\nReply-To: $email\r\nContent-Type: text/plain; charset=UTF-8";
+        
+        // Send email
+        if (mail($to, $subject, $message, $headers)) {
+            $confirmation = "Votre message a bien été envoyé.";
+        } else {
+            $confirmation = "Erreur lors de l'envoi du message. Veuillez réessayer plus tard.";
+        }
+    } else {
+        $confirmation = "Veuillez remplir tous les champs.";
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -26,7 +68,7 @@
     <section class="py-5">
         <div class="container">
             <h2 class="text-center text-primary mb-4">Formulaire de Contact</h2>
-            <form action="#" method="POST" class="bg-light p-4 rounded shadow">
+            <form action="" method="POST" class="bg-light p-4 rounded shadow">
                 <div class="mb-3">
                     <label for="name" class="form-label">Nom complet</label>
                     <input type="text" class="form-control" id="name" name="name" placeholder="Entrez votre nom" required>
@@ -41,6 +83,13 @@
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Envoyer</button>
             </form>
+
+            <!-- Display confirmation message after form submission -->
+            <?php if (!empty($confirmation)) : ?>
+                <div class="alert alert-info mt-3">
+                    <?= htmlspecialchars($confirmation, ENT_QUOTES, 'UTF-8'); ?>
+                </div>
+            <?php endif; ?>
         </div>
     </section>
 
