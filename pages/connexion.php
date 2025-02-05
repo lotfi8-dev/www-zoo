@@ -27,26 +27,26 @@ $error = ''; //  error messages
 $logError = ''; // logging detailed errors
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // CSRF token validation (important: check before handling user data)
+    // CSRF token validation (check before user data)
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $error = "Une erreur est survenue. Veuillez réessayer.";
-        error_log("CSRF token mismatch for email: " . $_POST['email'], 3, "/chemin/a/modifier/plus/tard");
+        error_log("CSRF token mismatch for email: " . $_POST['email'], 3, "/var/log/test.log");
     } else {
-        // Sanitize user input
+        // user input
         $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
         $password = trim($_POST['password']);
 
-        // Validate email format
+        // email format
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $error = "L'adresse email fournie est invalide.";
         } else {
             try {
-                // Query the database for the user with the provided email
+                // database query
                 $stmt = $pdo->prepare("SELECT id, email, password, role FROM users WHERE email = ?");
                 $stmt->execute([$email]);
                 $user = $stmt->fetch();
 
-                // Check if user exists and if the password matches
+                // check user & password
                 if ($user && password_verify($password, $user['password'])) {
                     // Regenerate session ID for security after login
                     session_regenerate_id(true);
@@ -66,18 +66,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             header("Location: ../pages/espace-veterinaire.php");
                             break;
                         default:
-                            header("Location: ../pages/index.php"); // Default redirect
+                            header("Location: ../pages/index.php"); // redirect
                             break;
                     }
                     exit();
                 } else {
                     $error = "Email ou mot de passe incorrect.";
-                    error_log("Login failed for email: $email", 3, "/var/log/myapp_errors.log");
+                    error_log("Login failed for email: $email", 3, "/var/log/test.log");
                 }
             } catch (Exception $e) {
                 $error = "Une erreur est survenue. Veuillez réessayer.";
-                // Log the detailed error for admins/developers
-                error_log("Database error: " . $e->getMessage(), 3, "/var/log/myapp_errors.log");
+                // Log detailed error
+                error_log("Database error: " . $e->getMessage(), 3, "/var/log/test.log");
             }
         }
     }
@@ -100,8 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- Section Connexion -->
     <section class="py-5">
         <div class="container">
+            <br>
             <h2 class="text-center text-primary mb-4">Connectez-vous</h2>
-
             <!-- Display generic error message if login fails -->
             <?php if ($error): ?>
                 <div class="alert alert-danger"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></div>
