@@ -1,3 +1,58 @@
+<?php
+// Secure session cookies
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'domain' => 'localhost',  // Change if needed
+    'secure' => false,  // no httpss
+    'httponly' => true,  // Prevent Js
+    'samesite' => 'Strict'  // Prevent CSRF attacks
+]);
+
+// Security Headers
+header("X-Frame-Options: DENY");
+header("X-XSS-Protection: 1; mode=block");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' https://kit.fontawesome.com https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com;");
+
+// Start session
+session_start();
+require_once '../include/db_connect.php';
+
+// Check if user is logged in and is an admin
+if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
+    header("Location: ../index.php");
+    exit();
+}
+
+// Generate CSRF token if not exists
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// Fetch dashboard data
+try {
+    // Total Users
+    $stmtUsers = $pdo->query("SELECT COUNT(*) as total FROM users");
+    $totalUsers = $stmtUsers->fetch(PDO::FETCH_ASSOC)['total'];
+
+    // Total Reservations
+    $stmtReservations = $pdo->query("SELECT COUNT(*) as total FROM reservations");
+    $totalReservations = $stmtReservations->fetch(PDO::FETCH_ASSOC)['total'];
+
+    // Latest Notifications
+    $stmtNotifications = $pdo->query("SELECT message FROM notifications ORDER BY created_at DESC LIMIT 4");
+    $notifications = $stmtNotifications->fetchAll(PDO::FETCH_ASSOC);
+
+    // Latest Activity History
+    $stmtHistory = $pdo->query("SELECT date, action, user, status FROM activity_log ORDER BY date DESC LIMIT 5");
+    $history = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    error_log("Database error: " . $e->getMessage(), 3, "/var/log/zooarcadia_errors.log");
+    die("Une erreur est survenue, veuillez contacter l'administrateur.");
+}
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -9,10 +64,11 @@
     <link rel="stylesheet" href="/css/admin-dashboard.css">
 </head>
 <body>
-    <!-- Barre de navigation -->
+
+    <!-- Navigation -->
     <?php include '../include/navbar.php'; ?>
 
-    <!-- Section Tableau de Bord Administrateur -->
+    <!-- Admin Dashboard -->
     <section class="py-5">
         <div class="container">
             <h2 class="text-center text-primary mb-4">Tableau de Bord Administrateur</h2>
@@ -22,8 +78,8 @@
                     <div class="card text-center">
                         <div class="card-body">
                             <h5 class="card-title">Gestion des Utilisateurs</h5>
-                            <p class="card-text">Ajoutez, modifiez ou supprimez des comptes utilisateurs.</p>
-                            <a href="#" class="btn btn-primary">Gérer les utilisateurs</a>
+                            <p class="card-text">Total : <strong><?= htmlspecialchars($totalUsers) ?></strong> utilisateurs.</p>
+                            <a href="manage-users.php" class="btn btn-primary">Gérer les utilisateurs</a>
                         </div>
                     </div>
                 </div>
@@ -31,8 +87,8 @@
                     <div class="card text-center">
                         <div class="card-body">
                             <h5 class="card-title">Réservations</h5>
-                            <p class="card-text">Consultez et modifiez les réservations des visiteurs.</p>
-                            <a href="#" class="btn btn-primary">Voir les réservations</a>
+                            <p class="card-text">Total : <strong><?= htmlspecialchars($totalReservations) ?></strong> réservations.</p>
+                            <a href="manage-reservations.php" class="btn btn-primary">Voir les réservations</a>
                         </div>
                     </div>
                 </div>
@@ -40,8 +96,8 @@
                     <div class="card text-center">
                         <div class="card-body">
                             <h5 class="card-title">Rapports et Statistiques</h5>
-                            <p class="card-text">Analysez les données clés du zoo avec des rapports détaillés.</p>
-                            <a href="#" class="btn btn-primary">Voir les rapports</a>
+                            <p class="card-text">Analysez les données clés du zoo.</p>
+                            <a href="reports.php" class="btn btn-primary">Voir les rapports</a>
                         </div>
                     </div>
                 </div>
@@ -49,20 +105,23 @@
         </div>
     </section>
 
-    <!-- Section Notifications et Alertes -->
+    <!-- Notifications -->
     <section class="py-5 bg-light">
         <div class="container">
             <h2 class="text-center text-primary mb-4">Notifications et Alertes</h2>
             <ul class="list-group">
-                <li class="list-group-item">Nouvelle réservation ajoutée par un visiteur.</li>
-                <li class="list-group-item">Mise à jour requise pour le suivi des animaux.</li>
-                <li class="list-group-item">Rapport mensuel disponible pour téléchargement.</li>
-                <li class="list-group-item">Un utilisateur a demandé une assistance technique.</li>
+                <?php if (!empty($notifications)): ?>
+                    <?php foreach ($notifications as $notification): ?>
+                        <li class="list-group-item"><?= htmlspecialchars($notification['message']) ?></li>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <li class="list-group-item">Aucune notification récente.</li>
+                <?php endif; ?>
             </ul>
         </div>
     </section>
 
-    <!-- Section Historique des Activités -->
+    <!-- Activity Log -->
     <section class="py-5">
         <div class="container">
             <h2 class="text-center text-primary mb-4">Historique des Activités</h2>
@@ -76,24 +135,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>2025-01-01</td>
-                        <td>Ajout d'une réservation</td>
-                        <td>Jean Dupont</td>
-                        <td>Complété</td>
-                    </tr>
-                    <tr>
-                        <td>2025-01-02</td>
-                        <td>Mise à jour des données animaux</td>
-                        <td>Claire Martin</td>
-                        <td>En cours</td>
-                    </tr>
-                    <tr>
-                        <td>2025-01-03</td>
-                        <td>Création d'un nouveau compte employé</td>
-                        <td>Admin</td>
-                        <td>Complété</td>
-                    </tr>
+                    <?php if (!empty($history)): ?>
+                        <?php foreach ($history as $event): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($event['date']) ?></td>
+                                <td><?= htmlspecialchars($event['action']) ?></td>
+                                <td><?= htmlspecialchars($event['user']) ?></td>
+                                <td><?= htmlspecialchars($event['status']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="4" class="text-center">Aucune activité récente.</td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
@@ -101,5 +156,6 @@
 
     <!-- Footer -->
     <?php include '../include/footer.php'; ?>
+
 </body>
 </html>
