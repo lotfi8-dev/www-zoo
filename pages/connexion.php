@@ -1,43 +1,29 @@
 <?php
+include_once(__DIR__ . '/../include/db_connect.php');
+
 session_start();
-include '../includes/db_connect.php';
 
-// Générer un token CSRF si inexistant
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
+$message = "";
 
-// Connexion sécurisée avec gestion des rôles
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        die("Erreur CSRF, veuillez réessayer.");
-    }
-    
-    $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST["email"];
+    $password = $_POST["password"];
 
-    $stmt = $pdo->prepare("SELECT id, email, password, role FROM users WHERE email = ?");
-    $stmt->execute([$email]);
-    $user = $stmt->fetch();
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE email = :email");
+        $stmt->execute(["email" => $email]);
+        $user = $stmt->fetch();
 
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['user_role'] = $user['role'];
-        
-        switch ($user['role']) {
-            case 'admin':
-                header("Location: ../pages/admin-dashboard.php");
-                break;
-            case 'employe':
-                header("Location: ../pages/espace-employe.php");
-                break;
-            case 'veterinaire':
-                header("Location: ../pages/espace-veterinaire.php");
-                break;
+        if ($user && password_verify($password, $user["password"])) {
+            $_SESSION["user_id"] = $user["id"];
+            $_SESSION["user_role"] = $user["role"];
+            header("Location: admin-dashboard.php");
+            exit();
+        } else {
+            $message = "Identifiants incorrects.";
         }
-        exit();
-    } else {
-        $error = "Email ou mot de passe incorrect.";
+    } catch (PDOException $e) {
+        $message = "Erreur SQL : " . $e->getMessage();
     }
 }
 ?>
@@ -47,27 +33,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion - Zoo Arcadia</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <title>Connexion</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/connexion.css"> 
 </head>
 <body>
-    <?php include '../includes/navbar.php'; ?>
-    <div class="container">
-        <h2 class="text-center">Connexion</h2>
-        <?php if (isset($error)) echo "<p class='text-danger'>$error</p>"; ?>
-        <form method="post">
-            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-            <div class="mb-3">
-                <label>Email</label>
-                <input type="email" name="email" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label>Mot de passe</label>
-                <input type="password" name="password" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Se connecter</button>
-        </form>
-    </div>
-    <?php include '../includes/footer.php'; ?>
+    <?php include_once(__DIR__ . '/../include/navbar.php'); ?>
+
+    <h1>Connexion</h1>
+    <?php if (!empty($message)) : ?>
+        <p class="error"><?= htmlspecialchars($message) ?></p>
+    <?php endif; ?>
+
+    <form action="connexion.php" method="POST">
+        <label for="email">Email :</label>
+        <input type="email" name="email" required>
+
+        <label for="password">Mot de passe :</label>
+        <input type="password" name="password" required>
+
+        <button type="submit">Se connecter</button>
+    </form>
+
+    <?php include_once __DIR__ . '/../include/footer.php'; ?>
 </body>
 </html>

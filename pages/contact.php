@@ -1,26 +1,27 @@
 <?php
-session_start();
+include_once(__DIR__ . '/../include/db_connect.php');
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $nom = trim($_POST['nom']);
-    $email = trim($_POST['email']);
-    $message = trim($_POST['message']);
-    
-    if (!empty($nom) && !empty($email) && !empty($message)) {
-        $to = "contact@zooarcadia.com";
-        $subject = "Message de $nom via le formulaire de contact";
-        $headers = "From: $email\r\nReply-To: $email\r\nContent-Type: text/plain; charset=UTF-8";
-        
-        if (mail($to, $subject, $message, $headers)) {
-            $confirmation = "Votre message a bien été envoyé.";
-        } else {
-            $confirmation = "Erreur lors de l'envoi du message. Veuillez réessayer plus tard.";
-        }
-    } else {
-        $confirmation = "Veuillez remplir tous les champs.";
+$message = "";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $titre = $_POST['titre'];
+    $description = $_POST['description'];
+    $email = $_POST['email'];
+
+    try {
+        $stmt = $pdo->prepare("INSERT INTO contacts (titre, description, email, date_envoi) 
+                               VALUES (:titre, :description, :email, NOW())");
+        $stmt->execute([
+            'titre' => $titre,
+            'description' => $description,
+            'email' => $email
+        ]);
+        $message = "Votre message a été envoyé avec succès.";
+    } catch (PDOException $e) {
+        $message = "Erreur SQL : " . $e->getMessage();
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -30,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="../css/contact.css">
 </head>
 <body>
-    <?php include '../includes/navbar.php'; ?>
+    <?php include '../include/navbar.php'; ?>
     <div class="container">
         <h2 class="text-center">Contactez-nous</h2>
         <?php if (isset($confirmation)) echo "<p class='text-info'>$confirmation</p>"; ?>
@@ -50,6 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <button type="submit" class="btn btn-primary">Envoyer</button>
         </form>
     </div>
-    <?php include '../includes/footer.php'; ?>
+    <?php include '../include/footer.php'; ?>
 </body>
 </html>

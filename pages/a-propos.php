@@ -79,7 +79,7 @@
                 <div class="equipe-card text-center p-3">
                     <img src="/images/equipe2.png" class="rounded-circle mb-3" alt="Vétérinaire" width="100">
                     <h5>Dr. Julien Morel</h5>
-                    <p>Chef Vétérinaire</p>
+                    <p>Chef Projet</p>
                 </div>
                 <div class="equipe-card text-center p-3">
                     <img src="/images/equipe3.png" class="rounded-circle mb-3" alt="Responsable Pédagogique" width="100">

@@ -2,92 +2,94 @@
 CREATE DATABASE IF NOT EXISTS zoo_arcadia;
 USE zoo_arcadia;
 
--- Table habitats
--- Contient les informations sur les différents habitats
-CREATE TABLE habitat (
-    id INT AUTO_INCREMENT PRIMARY KEY, -- Identifiant unique pour chaque habitat
-    nom VARCHAR(255) NOT NULL, -- Nom de l'habitat
-    description TEXT NOT NULL, -- Description de l'habitat
-    image VARCHAR(255) NOT NULL -- URL de l'image représentant l'habitat
-);
+-- 🔹 Table des utilisateurs (Admin, Employé, Vétérinaire)
+CREATE TABLE IF NOT EXISTS utilisateurs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    email VARCHAR(191) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('Admin', 'Employé', 'Vétérinaire') NOT NULL,
+    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Table animaux
--- Contient les informations sur les animaux du zoo
-CREATE TABLE animal (
-    id INT AUTO_INCREMENT PRIMARY KEY, -- Identifiant unique pour chaque animal
-    nom VARCHAR(255) NOT NULL, -- Nom de l'animal
-    espece VARCHAR(255) NOT NULL, -- Espèce de l'animal
-    description TEXT NOT NULL, -- Description détaillée de l'animal
-    image TEXT, -- Liste des URLs des images de l'animal (au format JSON)
-    etat_sante VARCHAR(255), -- État de santé de l'animal
-    alimentation VARCHAR(255), -- Type d'alimentation de l'animal
-    derniere_visite DATE, -- Dernière date de visite par un vétérinaire
-    habitat_id INT NOT NULL, -- Référence à l'habitat auquel appartient l'animal
-    FOREIGN KEY (habitat_id) REFERENCES habitat(id) ON DELETE CASCADE -- Supprimer les animaux si l'habitat est supprimé
-);
+-- 🔹 Ajout d'un admin par défaut pour `admin-dashboard.php`
+INSERT INTO utilisateurs (nom, email, password, role) VALUES
+('Admin Principal', 'admin@zoo.com', '$2y$10$XoPj3H6vYzt6TpIVqpI9hu.TPzQxDOb5cKcmh0XvRMWy7Y/mUHVKu', 'Admin');
 
--- Table utilisateurs
--- Contient les informations des utilisateurs (administrateurs, employés, vétérinaires)
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY, -- Identifiant unique pour chaque utilisateur
-    email VARCHAR(191) NOT NULL UNIQUE, -- Email utilisé comme identifiant
-    password VARCHAR(255) NOT NULL, -- Mot de passe (haché pour la sécurité)
-    role ENUM('admin', 'employee', 'vet') NOT NULL -- Rôle de l'utilisateur (administrateur, employé, vétérinaire)
-);
+-- 🔹 Table des habitats
+CREATE TABLE IF NOT EXISTS habitats (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    image VARCHAR(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Table avis visiteurs
--- Contient les avis laissés par les visiteurs
-CREATE TABLE review (
-    id INT AUTO_INCREMENT PRIMARY KEY, -- Identifiant unique pour chaque avis
-    pseudo VARCHAR(255) NOT NULL, -- Pseudo du visiteur qui laisse l'avis
-    avis TEXT NOT NULL, -- Contenu de l'avis
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Date de création de l'avis
-    is_approved BOOLEAN DEFAULT FALSE -- Indique si l'avis est validé par un employé
-);
+-- 🔹 Table des animaux
+CREATE TABLE IF NOT EXISTS animaux (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(255) NOT NULL,
+    espece VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    image TEXT,
+    etat_sante VARCHAR(255),
+    alimentation VARCHAR(255),
+    derniere_visite DATE,
+    habitat_id INT NOT NULL,
+    FOREIGN KEY (habitat_id) REFERENCES habitats(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Table messages de contact
--- Stocke les messages envoyés via le formulaire de contact
-CREATE TABLE contact_message (
-    id INT AUTO_INCREMENT PRIMARY KEY, -- Identifiant unique pour chaque message
-    title VARCHAR(255) NOT NULL, -- Titre du message
-    description TEXT NOT NULL, -- Contenu du message
-    email VARCHAR(255) NOT NULL, -- Email du visiteur
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Date et heure de création du message
-);
+-- 🔹 Table des avis visiteurs
+CREATE TABLE IF NOT EXISTS avis (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pseudo VARCHAR(255) NOT NULL,
+    utilisateur_id INT DEFAULT NULL,
+    avis TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_approved BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Table comptes rendus vétérinaires
--- Stocke les rapports de santé des animaux
-CREATE TABLE comptes_rendus (
-    id INT AUTO_INCREMENT PRIMARY KEY, -- Identifiant unique pour chaque rapport
-    id_animal INT NOT NULL, -- Identifiant de l'animal concerné
-    etat_sante TEXT NOT NULL, -- Rapport sur l'état de santé
-    date DATE NOT NULL, -- Date du rapport
-    commentaire TEXT, -- Commentaire additionnel
-    created_by INT NOT NULL, -- Identifiant du vétérinaire ayant fait le rapport
-    FOREIGN KEY (id_animal) REFERENCES animal(id) ON DELETE CASCADE, -- Supprime les rapports si l'animal est supprimé
-    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE -- Supprime les rapports si le vétérinaire est supprimé
-);
+-- 🔹 Table des messages de contact
+CREATE TABLE IF NOT EXISTS contact_message (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    utilisateur_id INT DEFAULT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Table nourriture
--- Suivi des repas donnés aux animaux
-CREATE TABLE nourriture (
-    id INT AUTO_INCREMENT PRIMARY KEY, -- Identifiant unique pour chaque repas
-    id_animal INT NOT NULL, -- Identifiant de l'animal concerné
-    type_nourriture VARCHAR(100) NOT NULL, -- Type de nourriture donnée
-    quantite FLOAT NOT NULL, -- Quantité en kg
-    date_repas DATETIME NOT NULL, -- Date et heure du repas
-    FOREIGN KEY (id_animal) REFERENCES animal(id) ON DELETE CASCADE -- Supprime les repas si l'animal est supprimé
-);
+-- 🔹 Table des comptes rendus vétérinaires
+CREATE TABLE IF NOT EXISTS comptes_rendus (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_animal INT NOT NULL,
+    etat_sante TEXT NOT NULL,
+    date DATE NOT NULL,
+    commentaire TEXT,
+    created_by INT NOT NULL,
+    FOREIGN KEY (id_animal) REFERENCES animaux(id) ON DELETE CASCADE,
+    FOREIGN KEY (created_by) REFERENCES utilisateurs(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Table consultations
--- Suivi des consultations d'animaux (statistiques)
-CREATE TABLE consultations (
-    id INT AUTO_INCREMENT PRIMARY KEY, -- Identifiant unique pour chaque consultation
-    id_animal INT NOT NULL, -- Identifiant de l'animal concerné
-    nombre_vues INT DEFAULT 0, -- Nombre de consultations
-    last_viewed TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Date de dernière consultation
-    FOREIGN KEY (id_animal) REFERENCES animal(id) ON DELETE CASCADE -- Supprime les consultations si l'animal est supprimé
-);
+-- 🔹 Table des repas des animaux
+CREATE TABLE IF NOT EXISTS nourriture (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_animal INT NOT NULL,
+    type_nourriture VARCHAR(100) NOT NULL,
+    quantite FLOAT NOT NULL,
+    date_repas DATETIME NOT NULL,
+    FOREIGN KEY (id_animal) REFERENCES animaux(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 🔹 Table des consultations des animaux
+CREATE TABLE IF NOT EXISTS consultations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_animal INT NOT NULL,
+    nombre_vues INT DEFAULT 0,
+    last_viewed TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_animal) REFERENCES animaux(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Insérer les habitats
 INSERT INTO habitat (nom, description, image) VALUES

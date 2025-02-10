@@ -1,40 +1,48 @@
-/* ============================
+/* ==========================
    Global Styles
-============================ */
-body, html {
+============================= */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
     font-family: 'Poppins', sans-serif;
+    height: 100%;
     background-color: #f9f9f9;
     color: #333;
 }
 
-/* Navigation Bar */
+/* ==========================
+   Navigation Bar
+============================= */
 .navbar {
     background-color: #1e5631;
     padding: 15px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
-  
+
 .navbar-brand img {
     height: 60px;
 }
-  
+
 .navbar-nav .nav-link {
     font-size: 1rem;
     color: #fff;
     margin: 0 10px;
     transition: color 0.3s;
 }
-  
+
 .navbar-nav .nav-link:hover {
     color: #a8d5ba;
 }
-/* ============================
+
+/* ==========================
    Hero Section
-============================ */
+============================= */
 .hero-section {
-    height: 235px;
+    height: 250px;
     background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
         url('/images/contact.png') no-repeat center center/cover;
     display: flex;
@@ -46,33 +54,33 @@ body, html {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     animation: fadeIn 1.5s ease-in-out;
     min-height: 300px; /* Assure une hauteur minimale */
-    overflow: hidden; /* Empêche le débordement */  
+    overflow: hidden; /* Empêche le débordement */
 }
 
 .hero-section h1 {
-    font-size: 1.8rem;
+    font-size: 2.2rem;
     font-weight: bold;
 }
 
 .hero-section p {
-    font-size: 2rem;
+    font-size: 1.5rem;
     margin-top: 6px;
 }
 
-/* ============================
-   Formulaire de Contact
-============================ */
+/* ==========================
+   Contact Form Styling
+============================= */
 .contact-form {
     background: #ffffff;
     border-radius: 15px;
-    padding: 30px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .contact-form:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
 .contact-form .form-label {
@@ -83,8 +91,8 @@ body, html {
 .contact-form input,
 .contact-form textarea {
     border: 2px solid #ddd;
-    border-radius: 5px;
-    padding: 10px;
+    border-radius: 8px;
+    padding: 12px;
     font-size: 1rem;
     width: 100%;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -103,9 +111,11 @@ body, html {
     font-size: 1.2rem;
     font-weight: bold;
     border: none;
-    border-radius: 5px;
-    padding: 10px;
+    border-radius: 8px;
+    padding: 12px 20px;
+    width: 100%;
     transition: transform 0.3s ease, background-color 0.3s ease;
+    cursor: pointer;
 }
 
 .contact-form button:hover {
@@ -113,56 +123,9 @@ body, html {
     transform: translateY(-3px);
 }
 
-/* ============================
-   Coordonnées Section
-============================ */
-.contact-section h2 {
-    font-size: 2.5rem;
-    color: #007bff;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.contact-section .col-md-4 i {
-    margin-bottom: 10px;
-    color: #007bff;
-    transition: transform 0.3s ease, color 0.3s ease;
-}
-
-.contact-section .col-md-4 i:hover {
-    transform: scale(1.2);
-    color: #1abc9c;
-}
-
-.contact-section .col-md-4 h5 {
-    font-weight: bold;
-    margin-top: 10px;
-    color: #2c3e50;
-}
-
-.contact-section .col-md-4 p {
-    color: #555;
-    font-size: 1.1rem;
-}
-
-/* ============================
-   Carte Section
-============================ */
-.embed-responsive iframe {
-    border-radius: 10px;
-    border: 2px solid #ddd;
-    transition: transform 0.3s ease, border-color 0.3s ease;
-}
-
-.embed-responsive iframe:hover {
-    transform: scale(1.01);
-    border-color: #1abc9c;
-}
-
-/* ============================
+/* ==========================
    Footer
-============================ */
+============================= */
 footer {
     background-color: #2c3e50;
     color: white;
@@ -181,9 +144,9 @@ footer a:hover {
     color: white;
 }
 
-/* ============================
+/* ==========================
    Animations
-============================ */
+============================= */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -195,28 +158,24 @@ footer a:hover {
     }
 }
 
-/* ============================
+/* ==========================
    Responsive Design
-============================ */
+============================= */
 @media (max-width: 768px) {
     .hero-section {
         height: 250px;
     }
 
     .hero-section h1 {
-        font-size: 1rem;
+        font-size: 1.8rem;
     }
 
     .hero-section p {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
     }
 
     .contact-form {
-        padding: 20px;
-    }
-
-    .contact-section h2 {
-        font-size: 2rem;
+        padding: 25px;
     }
 
     footer {
