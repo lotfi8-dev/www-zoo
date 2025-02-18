@@ -15,7 +15,9 @@ header("X
 header("X-XSS-Protection: 1; mode=block");
 header("Content-Security-Policy: default-src 'self'; script-src 'self' https://kit.fontawesome.com https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com;");
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 include '../include/db_connect.php';
 
 // Générer un token CSRF

@@ -9,7 +9,9 @@ session_set_cookie_params([
     'samesite' => 'Strict'  // Protect from cross-site request attacks
 ]);
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Regen session
 session_regenerate_id(true);
