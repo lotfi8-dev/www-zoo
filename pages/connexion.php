@@ -10,7 +10,8 @@ session_set_cookie_params([
 ]);
 
 // Protection against XSS and Clickjacking
-header("X-Frame-Options: DENY");
+header("X
+-Frame-Options: DENY");
 header("X-XSS-Protection: 1; mode=block");
 header("Content-Security-Policy: default-src 'self'; script-src 'self' https://kit.fontawesome.com https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com;");
 
@@ -52,32 +53,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     session_regenerate_id(true);
 
                     $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['user_name'] = $user['name'];
                     $_SESSION['user_role'] = $user['role'];
 
                     // Redirect based on user role
                     switch ($user['role']) {
                         case 'admin':
-                            header("Location: ../pages/admin-dashboard.php");
+                            header("Location: /pages/admin-dashboard.php");
                             break;
                         case 'employe':
-                            header("Location: ../pages/espace-employe.php");
+                            header("Location: /pages/espace-employe.php");
                             break;
                         case 'veterinaire':
-                            header("Location: ../pages/espace-veterinaire.php");
+                            header("Location: /pages/espace-veterinaire.php");
                             break;
                         default:
-                            header("Location: ../pages/index.php"); // redirect
+                            header("Location: /index.php"); // redirect
                             break;
                     }
                     exit();
                 } else {
                     $error = "Email ou mot de passe incorrect.";
-                    // error_log("Login failed for email: $email", 3, "/var/log/test.log");
+                    error_log("Login failed for email: $email", 3, "/var/log/test.log");
                 }
             } catch (Exception $e) {
                 $error = "Une erreur est survenue. Veuillez réessayer.";
                 // Log detailed error
-                // error_log("Database error: " . $e->getMessage(), 3, "/var/log/test.log");
+                error_log("Database error: " . $e->getMessage(), 3, "/var/log/test.log");
             }
         }
     }

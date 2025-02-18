@@ -3,7 +3,7 @@
 $DB_HOST = '127.0.0.1';
 $DB_PORT = '3306'; // Port mis à jour
 $DB_USER = 'root';
-$DB_PASSWORD = '0980'; // faut changer le mot de passe ici 
+$DB_PASSWORD = ''; // faut changer le mot de passe ici 
 $DB_NAME = 'zoo_arcadia';
 
 try {
