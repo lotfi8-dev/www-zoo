@@ -1,18 +1,16 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'domain' => 'localhost',  // Make sure to set this to your actual domain if needed
+        'secure' => false,  // Set this to false as you're not using HTTPS
+        'httponly' => true,  // Prevent JS access to cookies
+        'samesite' => 'Strict'  // Protect from cross-site request attacks
+    ]);
 }
 ob_start();
-// secure cookies
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path' => '/',
-    'domain' => 'localhost',  // Make sure to set this to your actual domain if needed
-    'secure' => false,  // Set this to false as you're not using HTTPS
-    'httponly' => true,  // Prevent JS access to cookies
-    'samesite' => 'Strict'  // Protect from cross-site request attacks
-]);
-
 // Protection against XSS and Clickjacking
 header("X
 -Frame-Options: DENY");
