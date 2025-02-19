@@ -29,11 +29,6 @@ if (session_status() === PHP_SESSION_NONE) {
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="/pages/profile.php">Mon Profil</a></li>
-                            
-                            <?php if (!empty($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
-                                <li><a class="dropdown-item text-warning" href="/pages/admin_reviews.php">Gérer les Avis</a></li> <!-- 🔹 Admin-Only Review Management -->
-                            <?php endif; ?>
-
                             <li><a class="dropdown-item text-danger" href="/pages/logout.php">Déconnexion</a></li>
                         </ul>
                     </li>
