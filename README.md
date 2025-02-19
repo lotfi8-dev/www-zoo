@@ -6,6 +6,8 @@ Bienvenue dans le projet **Zoo Arcadia**. Ce Readme vous guide à travers les é
 
 Zoo Arcadia est une application web permettant aux utilisateurs de **réserver des visites au zoo**. Elle offre une interface conviviale pour consulter les informations sur le zoo, les horaires, les tarifs, et effectuer des **réservations en ligne**. Il permet aussi aux vétérinaires et employés d'avoir un accès plus facile aux données du Zoo.
 
+![](https://github.com/user-attachments/assets/d34d3bfc-edda-4afc-9f9d-a8979305306a)
+
 ---
 
 ## 📋 Prérequis
