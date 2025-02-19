@@ -1,26 +1,22 @@
 <?php
-// Secure session start
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
-}
-
-// Secure session cookies only if the session hasn't started yet
-if (!headers_sent()) {
     session_set_cookie_params([
         'lifetime' => 0,
         'path' => '/',
-        'domain' => 'localhost',  // Change if needed
-        'secure' => false,  // Change to true if using HTTPS
-        'httponly' => true,  // Prevent JavaScript access
-        'samesite' => 'Strict'  // Mitigate CSRF attacks
+        'domain' => 'localhost',  // Make sure to set this to your actual domain if needed
+        'secure' => false,  // Set this to false as you're not using HTTPS
+        'httponly' => true,  // Prevent JS access to cookies
+        'samesite' => 'Strict'  // Protect from cross-site request attacks
     ]);
 }
 
-// Include database connection
+session_regenerate_id(true);
+
 require_once '../include/db_connect.php';
 
-// Check if user is logged in and is an employee
-if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'employee') {
+// Check if user is logged in and is an vete
+if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'employee') {
     error_log("Unauthorized access attempt: " . print_r($_SESSION, true));
     header("Location: ../index.php");
     exit();
@@ -33,19 +29,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Generate CSRF token if not exists
+// Generate CSRF token
 if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // Secure token generation
 }
 
-// Handle review validation
+// Handle review validation (secure)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['review_action'])) {
     $review_id = filter_input(INPUT_POST, 'review_id', FILTER_VALIDATE_INT);
     $action = ($_POST['review_action'] === 'validate') ? 'valid' : 'invalid';
 
     if ($review_id) {
         try {
-            $stmt = $pdo->prepare("UPDATE reviews SET status = :status WHERE id = :id");
+            $stmt = $pdo->prepare("UPDATE review SET is_approved = :status WHERE id = :id");
             $stmt->execute(['status' => $action, 'id' => $review_id]);
         } catch (PDOException $e) {
             error_log("Database error: " . $e->getMessage());
@@ -54,10 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['review_action'])) {
     }
 }
 
-// Handle food management
+// Handle food management (sanitize inputs)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_food'])) {
-    $animal = htmlspecialchars(trim($_POST['animal']));
-    $food_type = htmlspecialchars(trim($_POST['food_type']));
+    $animal = htmlspecialchars(trim($_POST['animal']), ENT_QUOTES, 'UTF-8');
+    $food_type = htmlspecialchars(trim($_POST['food_type']), ENT_QUOTES, 'UTF-8');
     $quantity = filter_input(INPUT_POST, 'quantity', FILTER_VALIDATE_FLOAT);
 
     if ($animal && $food_type && $quantity !== false && $quantity > 0) {
@@ -73,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_food'])) {
 
 // Fetch pending reviews
 try {
-    $stmtReviews = $pdo->query("SELECT id, author, comment, created_at FROM reviews WHERE status = 'pending'");
+    $stmtReviews = $pdo->query("SELECT id, pseudo AS author, avis AS comment, created_at FROM review WHERE is_approved = FALSE");
     $reviews = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     error_log("Database error: " . $e->getMessage());
@@ -82,7 +78,12 @@ try {
 
 // Fetch food records
 try {
-    $stmtFood = $pdo->query("SELECT * FROM food_records ORDER BY created_at DESC");
+    $stmtFood = $pdo->query("
+    SELECT n.id, a.nom AS animal, n.type_nourriture, n.quantite, n.date_repas 
+    FROM nourriture n
+    JOIN animal a ON n.id_animal = a.id
+    ORDER BY n.date_repas DESC
+    ");
     $foodRecords = $stmtFood->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     error_log("Database error: " . $e->getMessage());

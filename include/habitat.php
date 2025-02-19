@@ -1,7 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
-}?>
+}
 include 'db_connect.php'; // Connexion à la base de données
 
 // Vérification de l'ID de l'habitat passé dans l'URL

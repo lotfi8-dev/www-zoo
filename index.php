@@ -44,12 +44,12 @@ try {
     <!-- Hero Section -->
     <header class="hero-section text-white text-center" style="background: url('/images/ZOoo.png') no-repeat center center / cover;">
         <div class="container">
+            <br></br>
             <h1 class="display-4">Bienvenue au Zoo Arcadia</h1>
             <p class="lead">Découvrez des habitats uniques et des animaux fascinants. Réservez dès maintenant !</p>
             <a href="/pages/reservation.php" class="btn btn-primary btn-lg mt-3">Réservez votre visite</a>
         </div>
     </header>
-    <pre><?php var_dump($_SESSION); ?></pre>
     <!-- Section Habitats -->
     <section class="py-5">
         <div class="container">
