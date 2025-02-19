@@ -1,4 +1,8 @@
 <?php
+// Start session
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 // Secure session cookies
 session_set_cookie_params([
     'lifetime' => 0,
@@ -14,12 +18,11 @@ header("X-Frame-Options: DENY");
 header("X-XSS-Protection: 1; mode=block");
 header("Content-Security-Policy: default-src 'self'; script-src 'self' https://kit.fontawesome.com https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com;");
 
-// Start session
-session_start();
 require_once '../include/db_connect.php';
 
 // Check if user is logged in and is an admin
-if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
+if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
+    error_log(print_r($_SESSION, true)); 
     header("Location: ../index.php");
     exit();
 }
@@ -40,12 +43,12 @@ try {
     $totalReservations = $stmtReservations->fetch(PDO::FETCH_ASSOC)['total'];
 
     // Latest Notifications
-    $stmtNotifications = $pdo->query("SELECT message FROM notifications ORDER BY created_at DESC LIMIT 4");
-    $notifications = $stmtNotifications->fetchAll(PDO::FETCH_ASSOC);
+    //$stmtNotifications = $pdo->query("SELECT message FROM notifications ORDER BY created_at DESC LIMIT 4");
+    //$notifications = $stmtNotifications->fetchAll(PDO::FETCH_ASSOC);
 
     // Latest Activity History
-    $stmtHistory = $pdo->query("SELECT date, action, user, status FROM activity_log ORDER BY date DESC LIMIT 5");
-    $history = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
+    //$stmtHistory = $pdo->query("SELECT date, action, user, status FROM activity_log ORDER BY date DESC LIMIT 5");
+    //$history = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
     error_log("Database error: " . $e->getMessage(), 3, "/var/log/zooarcadia_errors.log");

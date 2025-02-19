@@ -1,4 +1,8 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+ob_start();
 // secure cookies
 session_set_cookie_params([
     'lifetime' => 0,
@@ -15,9 +19,6 @@ header("X
 header("X-XSS-Protection: 1; mode=block");
 header("Content-Security-Policy: default-src 'self'; script-src 'self' https://kit.fontawesome.com https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com;");
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
 include '../include/db_connect.php';
 
 // Générer un token CSRF
@@ -57,21 +58,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['user_name'] = $user['name'];
                     $_SESSION['user_role'] = $user['role'];
-
                     // Redirect based on user role
                     switch ($user['role']) {
                         case 'admin':
                             header("Location: /pages/admin-dashboard.php");
-                            break;
-                        case 'employe':
+                            exit();
+                        case 'employee':
                             header("Location: /pages/espace-employe.php");
-                            break;
-                        case 'veterinaire':
+                            exit();
+                        case 'vet':
                             header("Location: /pages/espace-veterinaire.php");
-                            break;
+                            exit();
                         default:
                             header("Location: /index.php"); // redirect
-                            break;
+                            exit();
                     }
                     exit();
                 } else {
@@ -86,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 }
+ob_end_flush();
 ?>
 
 <!DOCTYPE html>

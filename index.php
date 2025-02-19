@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 include 'include/db_connect.php'; // Chemin mis à jour pour inclure le fichier de connexion
 
 if (!isset($pdo)) {
@@ -7,10 +9,23 @@ if (!isset($pdo)) {
 }
 
 // Récupération des données des habitats
-$query = "SELECT * FROM habitat";
-$stmt = $pdo->prepare($query);
-$stmt->execute();
-$habitats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$habitats = []; // Initialize an empty array to avoid undefined variable issues
+
+try {
+    $query = "SELECT * FROM habitat";
+    $stmt = $pdo->prepare($query);
+    
+    if ($stmt->execute()) {
+        $habitats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        // Log the error if execution fails
+        error_log("Failed to execute habitat query: " . implode(" | ", $stmt->errorInfo()), 3, "/var/log/app_errors.log");
+    }
+} catch (Exception $e) {
+    // Log the exception details
+    error_log("Database query exception: " . $e->getMessage(), 3, "/var/log/app_errors.log");
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -34,7 +49,7 @@ $habitats = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <a href="/pages/reservation.php" class="btn btn-primary btn-lg mt-3">Réservez votre visite</a>
         </div>
     </header>
-
+    <pre><?php var_dump($_SESSION); ?></pre>
     <!-- Section Habitats -->
     <section class="py-5">
         <div class="container">

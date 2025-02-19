@@ -29,11 +29,16 @@ CREATE TABLE animal (
 -- Table utilisateurs
 -- Contient les informations des utilisateurs (administrateurs, employés, vétérinaires)
 CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY, -- Identifiant unique pour chaque utilisateur
-    email VARCHAR(191) NOT NULL UNIQUE, -- Email utilisé comme identifiant
-    password VARCHAR(255) NOT NULL, -- Mot de passe (haché pour la sécurité)
-    role ENUM('admin', 'employee', 'vet') NOT NULL -- Rôle de l'utilisateur (administrateur, employé, vétérinaire)
+    id INT AUTO_INCREMENT PRIMARY KEY, 
+    name VARCHAR(100) NOT NULL, -- user's full name
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL CHECK (role IN ('admin', 'employee', 'vet')),
+    status ENUM('active', 'inactive') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
 
 -- Table avis visiteurs
 -- Contient les avis laissés par les visiteurs
@@ -87,6 +92,17 @@ CREATE TABLE consultations (
     nombre_vues INT DEFAULT 0, -- Nombre de consultations
     last_viewed TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Date de dernière consultation
     FOREIGN KEY (id_animal) REFERENCES animal(id) ON DELETE CASCADE -- Supprime les consultations si l'animal est supprimé
+);
+
+CREATE TABLE reservations (
+    id INT AUTO_INCREMENT PRIMARY KEY,  -- Identifiant unique de la réservation
+    nom VARCHAR(255) NOT NULL,          -- Nom du visiteur
+    email VARCHAR(255) NOT NULL,        -- Email du visiteur
+    date_reservation DATE NOT NULL,     -- Date choisie pour la visite
+    nb_personnes INT NOT NULL CHECK (nb_personnes > 0 AND nb_personnes <= 20), -- Nombre de visiteurs (limité entre 1 et 20)
+    message TEXT,                       -- Message ou demandes particulières
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Date de création de la réservation
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Dernière mise à jour
 );
 
 -- Insérer les habitats
