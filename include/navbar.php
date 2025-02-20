@@ -28,7 +28,6 @@ if (session_status() === PHP_SESSION_NONE) {
                             👤 <?= htmlspecialchars($_SESSION['user_name'] ?? 'Utilisateur'); ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/pages/profile.php">Mon Profil</a></li>
                             <li><a class="dropdown-item text-danger" href="/pages/logout.php">Déconnexion</a></li>
                         </ul>
                     </li>

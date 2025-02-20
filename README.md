@@ -1,90 +1,103 @@
-# Zoo Arcadia - Guide de Démarrage
+# 🦡 Zoo Arcadia - Guide de Démarrage
 
-Bienvenue dans le projet **Zoo Arcadia**. Ce Readme vous guide à travers les étapes nécessaires pour configurer et exécuter le projet en utilisant **Docker** avec l'image **XAMPP**.
+Bienvenue dans le projet **Zoo Arcadia** ! Ce guide vous explique comment configurer et exécuter l'application en local, ainsi que les bonnes pratiques Git et les documents associés.
+
+---
 
 ## 📌 Présentation du Projet
 
-Zoo Arcadia est une application web permettant aux utilisateurs de **réserver des visites au zoo**. Elle offre une interface conviviale pour consulter les informations sur le zoo, les horaires, les tarifs, et effectuer des **réservations en ligne**. Il permet aussi aux vétérinaires et employés d'avoir un accès plus facile aux données du Zoo.
+**Zoo Arcadia** est une plateforme de gestion pour un zoo. Elle permet :
+- La **réservation de visites** en ligne.
+- La **gestion des utilisateurs** (administrateurs, vétérinaires, visiteurs).
+- La **modération des avis** laissés par les visiteurs.
+- L'accès aux **données des animaux** pour les vétérinaires.
 
-![](https://github.com/user-attachments/assets/d34d3bfc-edda-4afc-9f9d-a8979305306a)
+L'application suit une architecture **PHP/MySQL** avec **Bootstrap** pour le design et utilise **Docker** pour l’environnement de développement.
 
 ---
 
 ## 📋 Prérequis
 
-Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur votre machine :
+Avant de commencer, assurez-vous d’avoir les éléments suivants installés :
 
-- **Docker** : Assurez-vous que Docker est installé et en cours d'exécution sur votre système.
+- **Docker** 🐳 *(permet de virtualiser Apache, MySQL et PHP via XAMPP)*
+- **Git** 🛠️ *(pour gérer le projet en version contrôlée)*
+- **Un navigateur web** 🌍 *(Chrome, Firefox, Edge, etc.)*
 
 ---
 
 ## ⚙️ Installation avec Docker
 
-Nous allons utiliser l'image Docker **XAMPP** pour configurer notre environnement de développement. Cette image contient **Apache, MySQL, PHP et PHPMyAdmin**, ce qui facilite le déploiement de l'application.
-
-### 🔹 Étapes d'Installation
-
-### 1️⃣ Cloner le dépôt du projet
+### 🔹 1️⃣ Cloner le dépôt Git
 
 ```bash
 $ git clone https://github.com/lotfi8-dev/www-zoo.git
 $ cd www-zoo
 ```
 
-### 2️⃣ Configurer les volumes et les ports
-
-Assurez-vous que votre projet est situé dans un répertoire spécifique sur votre machine. Par exemple, supposons que le projet est situé dans :
-/chemin/vers/votre/projet
-
-### 3️⃣ Exécuter le conteneur Docker
-
-Utilisez la commande suivante pour démarrer le conteneur Docker avec les ports appropriés exposés et le volume monté :
+### 🔹 2️⃣ Lancer l’application avec Docker
 
 ```bash
-$ docker run --name zoo_app8 -p 3306:3306 -p 41061:22 -p 41062:80 -d -v /chemin/vers/votre/projet:/opt/lampp/htdocs tomsik68/xampp:8
+$ docker run --name zoo_app -p 3306:3306 -p 41061:22 -p 41062:80 -d -v $(pwd):/opt/lampp/htdocs tomsik68/xampp:8
 ```
 
-📌 Explication des options :
-```bash
---name zoo_app8 : Nom du conteneur.
--p 3306:3306 : Expose le port MySQL.
--p 41061:22 : Expose le port SSH.
--p 41062:80 : Expose le port HTTP.
--d : Exécute le conteneur en arrière-plan.
--v /chemin/vers/votre/projet:/opt/lampp/htdocs : Monte le répertoire de votre projet dans le conteneur.
+### 🔹 3️⃣ Importer la base de données
+
+1. **Accéder à PHPMyAdmin** :  
+   👉 [http://localhost:41062/phpmyadmin](http://localhost:41062/phpmyadmin)
+2. **Se connecter** avec :
+   - **Utilisateur** : `root`
+   - **Mot de passe** : *(laisser vide)*
+3. **Créer la base de données** :  
+   ```sql
+   CREATE DATABASE zoo_arcadia;
+   ```
+4. **Importer le fichier SQL** (situé dans `/DB/zoo_arcadia_populated.sql`).
+
+---
+
+## 🚀 Accéder à l’Application
+
+Une fois la base importée, ouvrez votre navigateur et accédez à :
+👉 [http://localhost:41062](http://localhost:41062)
+
+🔑 **Identifiants par défaut :**
+- **Administrateur** : `admin@zoo.com` | `SecureAdmin123!`
+- **Vétérinaire** : `vet1@zoo.com` | `VetPass789#`
+- **Utilisateur** : `employee1@zoo.com` | `EmployeePass456$`
+
+---
+
+## 🏘️ Structure du Projet
+
+```
+📁 www-zoo
+│── 📁 DB              # Fichiers SQL de création et intégration de données
+│── 📁 include         # Fichiers PHP réutilisables (navbar, footer, etc.)
+│── 📁 pages          # Pages principales de l'application
+│── 📁 css            # Feuilles de style CSS
+│── 📁 assets         # Images et icônes
+│── README.md         # Guide d’installation et documentation
 ```
 
-## 🛠️ Importer la Base de Données
+---
 
-Le projet contient un fichier de base de données situé dans le répertoire DB. Pour l'importer dans MySQL, suivez ces étapes :
+## 🏰 Bonnes Pratiques Git
 
-- Accédez à PHPMyAdmin en naviguant vers :
-👉 http://localhost:41062/phpmyadmin
-- Connectez-vous avec les identifiants par défaut :
-Utilisateur : root
-Mot de passe : (laisser vide)
-Créez une nouvelle base de données pour le projet.
-Sélectionnez la base de données nouvellement créée.
-Cliquez sur l'onglet "Importer" et téléchargez le fichier .sql situé dans le répertoire DB du projet.
-Exécutez l'importation pour configurer les tables et les données nécessaires.
-⚙️ Configurer les Paramètres de Connexion
+Le projet suit une gestion rigoureuse avec **Git** :
 
-- Assurez-vous que les paramètres de connexion à la base de données dans votre application correspondent aux informations de votre conteneur Docker.
+1. **Branche principale** (`main`) : Contient le code stable et validé.
+2. **Branche de développement** (`develop`) : Intègre les nouvelles fonctionnalités avant leur validation.
+---
 
-## 🔹 Détails de connexion par défaut :
-Hôte : localhost
+## 📂 Documentation Incluse
 
-Utilisateur : root
+📂 **Fichiers fournis** :
 
-Mot de passe : (laisser vide)
+✔️ **Base de données SQL** (`DB/zoo_arcadia.sql`)  
+x **Manuel d’utilisation (PDF)** 📄  
+x **Charte graphique (PDF)** 🎨 *(couleurs, police, wireframes, maquettes desktop & mobile)*  
+x **Documentation projet (PDF)** 📝 *(Méthodologie, gestion des tâches, Kanban, etc.)*  
+x **Documentation technique (PDF)** 🛠️ *(MCD, diagrammes UML, déploiement, etc.)*  
 
-Nom de la base de données : zoo_arcadia
-
-## 🌍 Accéder à l'Application
-
-Une fois le conteneur en cours d'exécution et la base de données configurée, vous pouvez accéder à l'application en naviguant vers :
-
-👉 http://localhost:41062
-
-
-
+---

@@ -2,14 +2,6 @@
 // Start session securely
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
-    session_set_cookie_params([
-        'lifetime' => 0,
-        'path' => '/',
-        'domain' => 'localhost',
-        'secure' => false,
-        'httponly' => true,
-        'samesite' => 'Strict'
-    ]);
 }
 
 // Security Headers
@@ -185,12 +177,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['user_action'], $_POST
                                 <form method="post" style="display:inline;">
                                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                                     <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
-                                    <select name="new_role" class="form-select form-select-sm" required>
+                                    <select name="new_role" class="form-select form-select-sm d-inline-block w-auto" required>
                                         <option value="user">Utilisateur</option>
                                         <option value="admin">Administrateur</option>
                                         <option value="veterinary">Vétérinaire</option>
                                     </select>
-                                    <button type="submit" name="user_action" value="update_role" class="btn btn-warning btn-sm">Mettre à jour</button>
+                                    <button type="submit" name="user_action" value="update_role" class="btn btn-warning btn-sm ms-2">Mettre à jour</button>
                                 </form>
                             </td>
                         </tr>
