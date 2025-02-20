@@ -14,6 +14,8 @@ Bienvenue dans le projet **Zoo Arcadia** ! Ce guide vous explique comment config
 
 L'application suit une architecture **PHP/MySQL** avec **Bootstrap** pour le design et utilise **Docker** pour l’environnement de développement.
 
+![](https://github.com/user-attachments/assets/d34d3bfc-edda-4afc-9f9d-a8979305306a)
+
 ---
 
 ## 📋 Prérequis
