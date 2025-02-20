@@ -78,7 +78,7 @@ Une fois la base importée, ouvrez votre navigateur et accédez à :
 │── 📁 include         # Fichiers PHP réutilisables (navbar, footer, etc.)
 │── 📁 pages          # Pages principales de l'application
 │── 📁 css            # Feuilles de style CSS
-│── 📁 assets         # Images et icônes
+│── 📁 images         # Images et icônes
 │── README.md         # Guide d’installation et documentation
 ```
 
@@ -98,8 +98,8 @@ Le projet suit une gestion rigoureuse avec **Git** :
 
 ✔️ **Base de données SQL** (`DB/zoo_arcadia.sql`)  
 x **Manuel d’utilisation (PDF)** 📄  
-x **Charte graphique (PDF)** 🎨 *(couleurs, police, wireframes, maquettes desktop & mobile)*  
+✔️ **Charte graphique (PDF)** 🎨 *(couleurs, police, wireframes, maquettes desktop & mobile)*  
 x **Documentation projet (PDF)** 📝 *(Méthodologie, gestion des tâches, Kanban, etc.)*  
-x **Documentation technique (PDF)** 🛠️ *(MCD, diagrammes UML, déploiement, etc.)*  
+✔️ **Documentation technique (PDF)** 🛠️ *(MCD, diagrammes UML, déploiement, etc.)*  
 
 ---
