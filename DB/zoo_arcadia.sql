@@ -105,6 +105,16 @@ CREATE TABLE reservations (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Dernière mise à jour
 );
 
+-- Insertion des utilisateurs avec leurs rôles et mots de passe hachés
+
+INSERT INTO users (name, email, password, role) 
+VALUES 
+('Admin User', 'admin@zoo.com', '$2y$10$EiY5mIHNOguXcJSkpeA5B.kKvszlySUGnkNGNMGtQmbs5jrc5zVbu', 'admin'), 
+('Employee One', 'employee1@zoo.com', '$2y$10$TzZcbMc1k7gJWw5Gg6Od.xfGpmgtXhpSiqEOCqzBxq0Y8y3RuKHSC', 'employee'), 
+('Employee Two', 'employee2@zoo.com', '$2y$10$wEtrthm9vwly6P4pkchb8m.9uwhWyxA23v8GmmY8yxVEfXOK7yZsy', 'employee'), 
+('Vet One', 'vet1@zoo.com', '$2y$10$8qPMLD7F29iD.6xT3S3sqeDbn5wEOz6j8.qGkBxsv3RUxohAFlr16', 'vet'), 
+('Vet Two', 'vet2@zoo.com', '$2y$10$Kl9wOmWLZlgMjp5CozXcV6jp9f0tPlD0IRUohjmCXs72yJ8lEB37S', 'vet');
+
 -- Insérer les habitats
 INSERT INTO habitat (nom, description, image) VALUES
 ('Savane', 'Vaste plaine herbeuse avec des animaux emblématiques.', '/images/savane.png'),
