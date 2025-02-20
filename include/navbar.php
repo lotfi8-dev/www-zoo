@@ -2,7 +2,12 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+// Vérification si user_name et user_role sont définis
+$user_name = isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : 'Utilisateur';
+$user_role = $_SESSION['user_role'] ?? null; // Vérifie le rôle de l'utilisateur
 ?>
+
 <!-- Navigation Bar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
@@ -20,12 +25,19 @@ if (session_status() === PHP_SESSION_NONE) {
                 <li class="nav-item"><a class="nav-link" href="/pages/Reservation.php">Réservation</a></li>
                 <li class="nav-item"><a class="nav-link" href="/pages/a-propos.php">À propos</a></li>
                 <li class="nav-item"><a class="nav-link" href="/pages/contact.php">Contact</a></li>
-                <li class="nav-item"><a class="nav-link" href="/pages/reviews.php">Avis</a></li> <!-- 🔹 NEW: Reviews Section -->
+                <li class="nav-item"><a class="nav-link" href="/pages/reviews.php">Avis</a></li>
+
+                <!-- 🔹 Onglet "Dashboard" visible uniquement pour les Admins -->
+                <?php if ($user_role === 'admin'): ?>
+                    <li class="nav-item">
+                        <a class="nav-link text-warning fw-bold" href="/pages/admin-dashboard.php">Dashboard</a>
+                    </li>
+                <?php endif; ?>
 
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                            👤 <?= htmlspecialchars($_SESSION['user_name'] ?? 'Utilisateur'); ?>
+                            👤 <?= $user_name; ?> 
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item text-danger" href="/pages/logout.php">Déconnexion</a></li>
